@@ -1,0 +1,111 @@
+import mysql.connector
+
+
+def conectar_biblioteca_bd():
+    conexion = mysql.connector.connect(
+        user='root',
+        password='arauz15',
+        host='localhost',
+        database='mysql',  
+        port=3307
+    )
+    cursor = conexion.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS libros(
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        titulo VARCHAR(255) NOT NULL,
+        autor VARCHAR(255) NOT NULL,
+        genero VARCHAR(100) NOT NULL,
+        estadoLectura ENUM('Leído', 'No leído') NOT NULL
+        )
+    ''')
+    conexion.commit()
+    return conexion
+
+def agregar_libro(conexion, titulo, autor, genero, estadoLectura):
+    while estadoLectura not in ["Leído", "No leído"]:
+        estadoLectura = input("Estado lectura inválido. Ingrese 'Leído' o 'No leído': ")
+
+    cursor = conexion.cursor()
+    cursor.execute("INSERT INTO libros (titulo, autor, genero, estadoLectura) VALUES (%s, %s, %s, %s)",
+                   (titulo, autor, genero, estadoLectura))
+    conexion.commit()
+    print("El libro ha sido agregado")
+
+def actualizar_libro(conexion, id_libro, estado_new):
+    while estado_new not in ["Leído", "No leído"]:
+        estado_new = input("Estado de lectura inválido. Ingrese 'Leído' o 'No leído': ")
+
+    cursor = conexion.cursor()
+    cursor.execute("UPDATE libros SET estadoLectura = %s WHERE id = %s", (estado_new, id_libro))
+    conexion.commit()
+    print("El estado del libro ha sido actualizado")
+
+def eliminar_libro(conexion, id_libro):
+    cursor = conexion.cursor()
+    cursor.execute("DELETE FROM libros WHERE id = %s", (id_libro,))
+    conexion.commit()
+    print("El libro ha sido eliminado")
+
+def lista_libro(conexion):
+    cursor = conexion.cursor()
+    cursor.execute("SELECT id, titulo, autor, genero, estadoLectura FROM libros")
+    libros = cursor.fetchall()
+    for libro in libros:
+        print(f"id: {libro[0]}, Título: {libro[1]}, Autor: {libro[2]}, Género: {libro[3]}, Estado de lectura: {libro[4]}")
+
+def buscar_libro(conexion, nombre, valor):
+    cursor = conexion.cursor()
+    query = f"SELECT id, titulo, autor, genero, estadoLectura FROM libros WHERE {nombre} LIKE %s"
+    cursor.execute(query, (f"%{valor}%",))
+    libros = cursor.fetchall()
+    for libro in libros:
+        print(f"Id: {libro[0]}, Título: {libro[1]}, Autor: {libro[2]}, Género: {libro[3]}, Estado de Lectura: {libro[4]}")
+
+def menu():
+    conexion = conectar_biblioteca_bd()
+    print("\nBiblioteca")
+    while True:
+        print("\nMenú de mi Biblioteca")
+        print("1. Agregar libro")
+        print("2. Actualizar libro")
+        print("3. Eliminar libro")
+        print("4. Listar libros")
+        print("5. Buscar libro")
+        print("6. Salir")
+        option = input("Seleccione una de las opciones: ")
+
+        if option == "1":
+            titulo = input("Título: ")
+            autor = input("Autor: ")
+            genero = input("Género: ")
+            estadoLectura = input("Estado lectura (Leído/No leído): ")
+            agregar_libro(conexion, titulo, autor, genero, estadoLectura)
+
+        elif option == "2":
+            id_libro = int(input("ID de libro: "))
+            estado_new = input("Estado de lectura nuevo (Leído/No leído): ")
+            actualizar_libro(conexion, id_libro, estado_new)
+
+        elif option == "3":
+            id_libro = int(input("ID de libro que desea eliminar: "))
+            eliminar_libro(conexion, id_libro)
+
+        elif option == "4":
+            lista_libro(conexion)
+
+        elif option == "5":
+            nombre = input("Buscar por (titulo, autor, genero): ")
+            valor = input("Valor de búsqueda: ")
+            buscar_libro(conexion, nombre, valor)
+
+        elif option == "6":
+            conexion.close()
+            print("Saliendo de la Biblioteca")
+            break
+
+        else:
+            print("La opción no existe. Intenta nuevamente.")
+
+if __name__ == "__main__":
+    menu()
