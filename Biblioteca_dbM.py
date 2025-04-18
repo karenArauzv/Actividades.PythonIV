@@ -63,8 +63,8 @@ def menu():
 
         elif opcion == "2":
             libro_id = input("ID del libro : ")
-            campo = input("Campo a actualizar (titulo, autor, genero, estadoLectura): ")
-            nuevo_valor = input(f"Nuevo valor para {campo}: ")
+            campo = input("Campo a actualizar titulo, autor, genero, estadoLectura: ")
+            nuevo_valor = input(f"Nuevo valor: ")
             actualizar_libro(coleccion, libro_id, campo, nuevo_valor)
 
         elif opcion == "3":
