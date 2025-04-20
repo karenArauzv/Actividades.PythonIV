@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Actualizar Libro{% endblock %}
+{% block content %}
+<h1>Actualizar Información del Libro</h1>
+<form action="/actuali_libro/{{ book_id }}" method="post">
+    <label for="titulo">Título:</label>
+    <input type="text" id="titulo" name="titulo" value="{{ libro.titulo }}" required>
+    <label for="autor">Autor:</label>
+    <input type="text" id="autor" name="autor" value="{{ libro.autor }}" required>
+    <label for="genero">Género:</label>
+    <input type="text" id="genero" name="genero" value="{{ libro.genero }}" required>
+    <label for="estadoLectura">Estado de Lectura:</label>
+    <select id="estadoLectura" name="estadoLectura">
+        <option value="Pendiente" {% if libro.estadoLectura == "Pendiente" %}selected{% endif %}>Pendiente</option>
+        <option value="En progreso" {% if libro.estadoLectura == "En progreso" %}selected{% endif %}>En progreso</option>
+        <option value="Completado" {% if libro.estadoLectura == "Completado" %}selected{% endif %}>Completado</option>
+    </select>
+    <button type="submit">Actualizar</button>
+</form>
+{% endblock %}

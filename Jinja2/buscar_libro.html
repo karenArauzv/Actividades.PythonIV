@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Buscar Libros{% endblock %}
+{% block content %}
+<h1>Buscar Libros</h1>
+<form action="/buscar_libros" method="post">
+    <label for="query">Búsqueda:</label>
+    <input type="text" id="query" name="query" required>
+    <label for="campo">Campo:</label>
+    <select id="campo" name="campo">
+        <option value="titulo">Título</option>
+        <option value="autor">Autor</option>
+        <option value="genero">Género</option>
+    </select>
+    <button type="submit">Buscar</button>
+</form>
+{% if libros %}
+<h2>Resultados:</h2>
+<ul>
+    {% for libro in libros %}
+    <li>{{ libro.titulo }} por {{ libro.autor }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No se encontraron resultados.</p>
+{% endif %}
+{% endblock %}

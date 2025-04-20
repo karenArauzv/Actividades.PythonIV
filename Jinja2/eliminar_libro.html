@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Eliminar Libro{% endblock %}
+{% block content %}
+<h1>Eliminar Libro</h1>
+<p>¿Estás seguro de que deseas eliminar el libro "{{ libro.titulo }}"?</p>
+<form action="/eliminar_libro/{{ book_id }}" method="post">
+    <button type="submit">Sí, eliminar</button>
+    <a href="/">Cancelar</a>
+</form>
+{% endblock %}
